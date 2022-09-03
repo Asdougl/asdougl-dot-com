@@ -1,0 +1,56 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
+}
+
+datasource db {
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
+}
+
+model Post {
+  id              String      @id @default(cuid())
+  title           String
+  slug            String      @unique
+  content         String      @db.Text
+  author          Author?      @relation(fields: [authorId], references: [id])
+  authorId        String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  publishedAt     DateTime?
+  status          PostStatus  @default(DRAFT)
+  images          Image[]
+}
+
+enum PostStatus {
+  DRAFT
+  REVIEW
+  PUBLISHED
+  ARCHIVED
+}
+
+model Image {
+  id              String      @id @default(cuid())
+  filename        String      @unique
+  alttext         String      
+  post            Post        @relation(fields: [postId], references: [id])
+  postId          String
+  verified        Boolean     @default(false)
+  createdAt       DateTime    @default(now())
+}
+
+model Author {
+  id              String      @id @default(cuid())
+  username        String      @unique
+  name            String
+  bio             String
+  image           String?
+  twitter         String?
+  github          String?
+  website         String?
+  public          Boolean     @default(false)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  posts           Post[]
+}

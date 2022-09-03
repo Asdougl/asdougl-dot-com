@@ -1,0 +1,10 @@
+{
+  "extends": [
+    "@remix-run/eslint-config",
+    "@remix-run/eslint-config/node",
+    "@asdougl"
+  ],
+  "rules": {
+    "@typescript-eslint/no-redeclare": 0
+  }
+}
